@@ -1,24 +1,91 @@
 import streamlit as st
-from bot.query_engine import handle_query
 
-st.set_page_config(page_title="Telecom Bot", page_icon="📱")
+# -------------------------
+# PAGE CONFIG
+# -------------------------
+st.set_page_config(
+    page_title="Telecom Bot",
+    layout="wide"
+)
 
-st.title("📱 Telecom Bot")
-st.write("Ask anything about telecom plans — pricing, validity, data, benefits, and more.")
+# -------------------------
+# GLOBAL CSS (Minimal Divider)
+# -------------------------
+st.markdown("""
+<style>
+.section-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d6dbe6, transparent);
+    margin: 60px 0;
+}
 
-st.markdown("---")
+.hero-section {
+    background: linear-gradient(to right, #e3f2fd, #f8fbff);
+    padding: 40px;
+    border-radius: 18px;
+    text-align: center;
+}
 
-# User input
-user_query = st.text_input("Ask your telecom question:")
+.hero-title {
+    color: #1f3c88;
+    font-size: 42px;
+    font-weight: 700;
+}
 
-if st.button("Get Answer"):
-    if user_query.strip() == "":
-        st.warning("Please enter a question.")
-    else:
-        with st.spinner("Thinking..."):
-            response = handle_query(user_query)
-            st.success("Here’s your answer:")
-            st.write(response)
+.hero-subtitle {
+    color: #4a5568;
+    font-size: 18px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-st.markdown("---")
-st.caption("Powered by FAISS + Sentence Transformers + Ollama (Gemma 3)")
+# =========================
+# HERO SECTION
+# =========================
+st.markdown("""
+<div class="hero-section">
+    <div class="hero-title">📱 Telecom Bot</div>
+    <div class="hero-subtitle">
+        Your AI-powered assistant for telecom plans, pricing, benefits & smart recommendations
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# 🔥 Divider AFTER HERO
+st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+
+
+# =========================
+# ASK TELECOM BOT SECTION
+# =========================
+st.subheader("💬 Ask Telecom Bot")
+
+user_query = st.text_input("Ask anything about telecom plans...")
+
+if user_query:
+    st.write("AI Response will appear here...")
+
+# 🔥 Divider AFTER ASK BOT
+st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+
+
+# =========================
+# AVAILABLE PLANS SECTION
+# =========================
+st.subheader("📋 Available Plans")
+
+# Replace with your real dataframe
+st.write("Plans table goes here...")
+
+# 🔥 Divider AFTER AVAILABLE PLANS
+st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+
+
+# =========================
+# CHARTS SECTION
+# =========================
+st.subheader("📊 Price vs Data")
+
+# Replace with your real chart
+st.write("Chart will appear here...")
