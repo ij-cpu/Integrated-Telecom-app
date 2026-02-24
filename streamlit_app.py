@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import requests
 
 # -------------------------
 # PAGE CONFIG
@@ -8,7 +9,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Telecom Bot", layout="wide")
 
 # -------------------------
-# SAMPLE TELECOM DATA
+# SAMPLE DATA
 # -------------------------
 data = {
     "Provider": ["Jio", "Airtel", "Vi", "BSNL", "Jio", "Airtel"],
@@ -59,7 +60,7 @@ st.markdown("""
 <div class="hero-section">
     <div class="hero-title">📱 Telecom Bot</div>
     <div class="hero-subtitle">
-        Your AI-powered assistant for telecom plans, pricing, benefits & smart recommendations
+        AI-powered assistant for telecom plan comparison & smart recommendations
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -82,7 +83,6 @@ with col2:
         ["All"] + list(df["Provider"].unique())
     )
 
-# Apply filters
 filtered_df = df[df["Price (₹)"] <= max_budget]
 
 if provider_filter != "All":
@@ -91,15 +91,29 @@ if provider_filter != "All":
 st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
 # =========================
-# ASK BOT SECTION
+# ASK BOT SECTION (OLLAMA)
 # =========================
 st.subheader("💬 Ask Telecom Bot")
 
 user_query = st.text_input("Ask anything about telecom plans...")
 
 if user_query:
-    st.success(f"You asked: {user_query}")
-    st.info("🤖 AI integration can be added here.")
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "gemma3:1b",
+                "prompt": f"User has these plans available:\n{filtered_df.to_string()}\n\nQuestion: {user_query}",
+                "stream": False
+            },
+            timeout=60
+        )
+
+        result = response.json()["response"]
+        st.success(result)
+
+    except:
+        st.error("⚠️ Ollama is not running. Please start Ollama using: ollama serve")
 
 st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
@@ -125,4 +139,4 @@ if not filtered_df.empty:
     ax.set_title("Price vs Data Relationship")
     st.pyplot(fig)
 else:
-    st.warning("No plans match the selected filters.")
+    st.warning("No plans match selected filters.")
