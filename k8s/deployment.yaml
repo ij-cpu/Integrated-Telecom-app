@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telecom-bot
+  labels:
+    app: telecom-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telecom-bot
+  template:
+    metadata:
+      labels:
+        app: telecom-bot
+    spec:
+      containers:
+        - name: telecom-bot
+          image: integrated-telecom-bot:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8501
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
